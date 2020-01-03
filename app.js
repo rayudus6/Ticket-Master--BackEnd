@@ -2,6 +2,7 @@ const express=require('express');
 const bodyParser=require('body-parser');
 const morgan=require('morgan');
 const app=express();
+const mongoose=require('./config/db');
 const port=3000;
 
 //middlewares
