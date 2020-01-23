@@ -11,7 +11,7 @@ const mongoose=require('./config/db');
 const employeeRouter=require('./routers/employees');
 const ticketsRouter=require('./routers/tickets');
 
-const port=4000;
+const port=3000;
 
 //middlewares
 app.use(bodyParser.json());
