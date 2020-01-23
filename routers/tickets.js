@@ -8,15 +8,15 @@ const { Ticket }=require('../models/ticket');
 
 const router=express.Router();
 
-router.use('/:id',(req,res,next) =>{
-    let id=req.params.id;
-    if(!ObjectId.isValid(id)){
-        res.send({
-            notice:'Invalid id'
-        })
-    }
-    next();
-});
+// router.use('/:id',(req,res,next) =>{
+//     let id=req.params.id;
+//     if(!ObjectId.isValid(id)){
+//         res.send({
+//             notice:'Invalid id'
+//         })
+//     }
+//     next();
+// });
 
 router.get('/',(req,res) =>{
     Ticket.find()
@@ -27,6 +27,25 @@ router.get('/',(req,res) =>{
         res.send(err)
     })
 });
+
+router.get('/status/open',(req,res) =>{
+    Ticket.openTickets().then((tickets) =>{
+        res.send(tickets);
+    })
+});
+
+router.get('/status/closed',(req,res) =>{
+    Ticket.closedTickets().then((tickets) =>{
+        res.send(tickets);
+    })
+});
+
+router.get('/priority/:value',(req,res) =>{
+    let value=req.params.value;
+    Ticket.findByPriority(value).then((tickets) =>{
+        res.send(tickets);
+    })
+})
 
 router.get('/:id',(req,res)=>{
     let id=req.params.id;

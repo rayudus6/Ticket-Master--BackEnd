@@ -50,6 +50,16 @@ let employeeSchema=new Schema({
 
 });
 
+//instance method
+employeeSchema.methods.shortInfo= function() {
+    return {
+        _id:this._id,
+        name:this.name,
+        email:this.email,
+        numberCount:this.mobileNumbers.length
+    }
+}
+
 const Employee=mongoose.model('employee',employeeSchema);
 
 module.exports={

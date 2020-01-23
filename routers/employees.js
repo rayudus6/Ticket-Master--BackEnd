@@ -13,6 +13,19 @@ router.get('/',(req,res) =>{
     })
 });
 
+router.get('/:id',(req,res) =>{
+    Employee.findById(req.params.id).then((employee) =>{
+        res.send(employee.shortInfo());
+    })
+});
+
+router.get('/show/short_info',(req,res) =>{
+    Employee.find().then((employees) =>{
+        let result=employees.map(emp =>emp.shortInfo())
+        res.send(result);
+    })
+})
+
 router.post('/',(req,res) =>{
     let body=_.pick(req.body,['name','email','department','salary','ageWhileJoining','address','hobbies','luckyNumber','mobileNumbers'])
     let employee=new Employee(body);

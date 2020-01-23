@@ -27,6 +27,18 @@ const ticketSchema=mongoose.Schema({
     }
 });
 
+ticketSchema.statics.openTickets=function() {
+    return this.find({ status:'open' });
+}
+
+ticketSchema.statics.closedTickets= function() {
+    return this.find({ status:'closed' });
+}
+
+ticketSchema.statics.findByPriority=function(priority) {
+    return this.find({ priority: priority})
+}
+
 const Ticket=mongoose.model('Tickets',ticketSchema);
 
 module.exports={
