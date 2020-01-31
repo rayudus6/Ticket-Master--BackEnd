@@ -1,11 +1,9 @@
 const express=require('express');
-
 const { Employee } =require('../models/employee');
-
+const { Ticket }=require('../models/ticket');
 const _=require('lodash');
 
 const router=express.Router();
-
 
 router.get('/',(req,res) =>{
     Employee.find().then((employees) =>{
@@ -14,7 +12,7 @@ router.get('/',(req,res) =>{
 });
 
 router.get('/:id',(req,res) =>{
-    Employee.findById(req.params.id).then((employee) =>{
+    Employee.findById(req.params.id).populate('tickets').then((employee) =>{
         res.send(employee.shortInfo());
     })
 });
@@ -24,10 +22,21 @@ router.get('/show/short_info',(req,res) =>{
         let result=employees.map(emp =>emp.shortInfo())
         res.send(result);
     })
-})
+});
+
+router.put('/:id',(req,res) =>{
+    let id=req.params.id;
+    let body=req.body;
+    Employee.findByIdAndUpdate(id,{$set:body},{new:true,runValidators:true}).then((employee) =>{
+        res.send(employee);
+    })
+    .catch((err) =>{
+        res.send(err);
+    })
+});
 
 router.post('/',(req,res) =>{
-    let body=_.pick(req.body,['name','email','department','salary','ageWhileJoining','address','hobbies','luckyNumber','mobileNumbers'])
+    let body=_.pick(req.body,['name','email','department','salary','ageWhileJoining','address','hobbies','luckyNumber','mobileNumbers',"tickets"])
     let employee=new Employee(body);
     employee.save().then((employee) =>{
         res.send(employee);
@@ -103,4 +112,13 @@ router.put('/:id/mobile_numbers/:mobile_id',(req,res) =>
     })
 });
 
-module.exports=router;
+router.get('/:id/tickets',(req,res) =>{
+    let id=req.params.id;
+    Ticket.find({employee: id}).then((tickets) =>{
+        res.send(tickets);
+    })
+})
+
+module.exports={
+    employeeRouter:router
+};

@@ -1,11 +1,18 @@
 const mongoose=require('mongoose');
-
 const Schema=mongoose.Schema;
 
 let employeeSchema=new Schema({
     name:{
         type:String,
-        required:true
+        required:true,
+        validate:{
+            validator:function(value){
+                return /^[a-zA-Z ]*$/.test(value);
+            },
+            message:function(props){
+                return `${props.path} must contain only alphabets`;
+            }
+        }
     },
     department:{
         type:String,
@@ -13,10 +20,25 @@ let employeeSchema=new Schema({
         required:true
     },
     salary:{
-        type:String
+        type:String,
+        validate:{
+            validator:function(value){
+                return value >=1000;
+            },
+            message:'Value should be greater than 10000'
+        }
     },
     email:{
-        type:String
+        type:String,
+        required:true,
+        validate:{
+            validator:function(userInput){
+                return /^[\w-]+(?:\.[\w-]+)*@(?:[\w-]+\.)+[a-zA-Z]{2,7}$/.test(userInput);
+            },
+            message:function(props){
+                return `${props.path} is not valid`;
+            }
+        }
     },
     ageWhileJoining:{
         type:Number,
@@ -46,7 +68,8 @@ let employeeSchema=new Schema({
                 type:Number
             }
         }
-    ]
+    ],
+    tickets:[ {type:Schema.Types.ObjectId,ref:'Ticket'}]
 
 });
 
@@ -56,11 +79,12 @@ employeeSchema.methods.shortInfo= function() {
         _id:this._id,
         name:this.name,
         email:this.email,
-        numberCount:this.mobileNumbers.length
+        numberCount:this.mobileNumbers.length,
+        tickets:this.tickets
     }
 }
 
-const Employee=mongoose.model('employee',employeeSchema);
+const Employee=mongoose.model('Employee',employeeSchema);
 
 module.exports={
     Employee

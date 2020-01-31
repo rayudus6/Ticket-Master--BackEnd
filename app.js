@@ -5,18 +5,16 @@ const {ObjectId}=require('mongodb');
 
 const morgan=require('morgan');
 const app=express();
-
 const mongoose=require('./config/db');
-
-const employeeRouter=require('./routers/employees');
-const ticketsRouter=require('./routers/tickets');
+const {employeeRouter}=require('./routers/employees');
+const {ticketsRouter}=require('./routers/tickets');
+const { usersRouter}=require('./routers/users');
 
 const port=3000;
 
 //middlewares
 app.use(bodyParser.json());
 app.use(morgan('short'));
-
 
 // app.param('id',(req,res,next) =>{
 //     let id=req.params.id;
@@ -28,12 +26,11 @@ app.use(morgan('short'));
 //     next();
 // })
 
-
 //Router handlers
 
 app.use('/tickets',ticketsRouter);
-
 app.use('/employees',employeeRouter);
+app.use('/users',usersRouter);
 
 //app.METHOD(Path,Handler);
 app.get('/',(req,res)=>{
@@ -41,7 +38,6 @@ app.get('/',(req,res)=>{
         msg:'Welcome to ticket master'
     });
 });
-
 
 app.listen(port,() =>{
     console.log('Listening port is',port);
